@@ -1,0 +1,4 @@
+1. Assumptions: distinct_val_*
+Note: They are used to restrict the values from different stages (i.e. execute stage, mem stage with data read from memory, mem stage with data from previous execute stage) so that they are not all same and can be detected easily. - Not a hard restriction 
+
+2. Assertions: In case of hazards, verifies if the intended value is passed through the hazard_detection stage output - Note: execute stage is given preference over the memory stage, because execute stage output will be from current-1 instruction, while memory stage output from current-2 instruction. Thus the former one will overwrite the other.  
