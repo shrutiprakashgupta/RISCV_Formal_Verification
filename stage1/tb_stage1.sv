@@ -252,4 +252,11 @@ input        ird_o
 	
 	pc_jump_prop: assert property (pc_jump);
 
+	//Assert: PC Value Stable while Stall is held high
+	property pc_stall;
+		@(posedge clk_i) disable iff (reset_i) ex_stall_w |=> iaddr_o == $past(iaddr_o);
+	endproperty
+	
+	pc_stall_prop: assert property (pc_stall);
+
 endmodule
