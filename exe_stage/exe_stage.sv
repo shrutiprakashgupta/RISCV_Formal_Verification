@@ -4,8 +4,8 @@
 // Top module:  	top
 // Linked modules: 	stage1, hazard_detection, mem_stage, adder, shifter, multiplier, divider
 ////////////////////////////////////////////////////////////////////////////////////////////
-`include "defines.sv"        
-     
+`include "defines.sv"
+
 module exe_stage(
 
 input             clk_i,
@@ -24,13 +24,13 @@ input             id_op_imm_r,
 
 input      [31:0] id_pc_reg,
 input      [31:0] id_next_pc_r,
-input             id_reg_jump_r, 
+input             id_reg_jump_r,
 input       [2:0] id_branch_r,
 
 input             id_mem_rd_r,
 input             id_mem_wr_r,
 input       [1:0] id_mem_size_r,
-input             id_mem_signed_r, 
+input             id_mem_signed_r,
 
 output reg        branch_taken_w,
 output reg [31:0] jump_addr_w,
@@ -88,7 +88,7 @@ adder adder_from_alu(
     .adder_v_w(adder_v_w),
     .adder_z_w(adder_z_w)
 );
-   
+
 shifter shifter_from_alu(
     .id_a_signed_r(id_a_signed_r),
     .id_ra_value_r(id_ra_value_r),
@@ -119,7 +119,7 @@ divider divider_from_alu(
     .div_remainder_w(div_remainder_w),
     .ex_stall_div_w(ex_stall_div_w)
 );
-    
+
 always @(*) begin
 
 b_w = (`BR_JUMP == id_branch_r) ? 1'b1 :
@@ -128,7 +128,7 @@ b_w = (`BR_JUMP == id_branch_r) ? 1'b1 :
       (`BR_LT   == id_branch_r) ? adder_n_w != adder_v_w :
       (`BR_GE   == id_branch_r) ? adder_n_w == adder_v_w :
       (`BR_LTU  == id_branch_r) ? !adder_c_w :
-      (`BR_GEU  == id_branch_r) ? adder_c_w : 1'b0; 
+      (`BR_GEU  == id_branch_r) ? adder_c_w : 1'b0;
 
 jump_addr_r = (id_reg_jump_r ? id_ra_value_r : id_pc_reg) + id_imm_r;
 
@@ -151,7 +151,7 @@ case (id_alu_op_r)
     default   : ex_alu_res_w_internal = 32'h0;
 endcase
 end
-   
+
 always @(posedge clk_i or posedge reset_i) begin
    if(reset_i) begin
       epoch<=1;
@@ -161,42 +161,41 @@ always @(posedge clk_i or posedge reset_i) begin
       epoch<=1;
    end
 end
-     
-always @(posedge clk_i or posedge reset_i) begin
-       if (reset_i) begin
-            ex_rd_index_r   <= 5'd2; // SP
-            ex_alu_res_r    <= `RESET_SP;
-            ex_mem_data_r   <= 32'h0;
-            ex_mem_rd_r     <= 1'b0;
-            ex_mem_wr_r     <= 1'b0;
-            ex_mem_signed_r <= 1'b0;
-            ex_mem_size_r   <= `SIZE_BYTE;
-            branch_taken_w  <= 0;
-            jump_addr_w     <= 0;
-        end
-        else if(~epoch) begin
-            ex_rd_index_r   <= 5'd0; // SP
-            ex_alu_res_r    <= 0;
-            ex_mem_data_r   <= 32'h0;
-            ex_mem_rd_r     <= 1'b0;
-            ex_mem_wr_r     <= 1'b0;
-            ex_mem_signed_r <= 1'b0;
-            ex_mem_size_r   <= `SIZE_BYTE;
-            branch_taken_w  <= 0;
-            jump_addr_w     <= 0;
-            end
-       else begin
-            ex_rd_index_r   <= id_rd_index_r;
-            ex_alu_res_r    <= ex_alu_res_w_internal;
-            ex_mem_data_r   <= id_rb_value_r;
-            ex_mem_rd_r     <= id_mem_rd_r;
-            ex_mem_wr_r     <= id_mem_wr_r;
-            ex_mem_signed_r <= id_mem_signed_r;
-            ex_mem_size_r   <= id_mem_size_r;
-            jump_addr_w     <= jump_addr_r;
-            branch_taken_w  <= b_w;
-        end
-    end
-   
-endmodule
 
+always @(posedge clk_i or posedge reset_i) begin
+    if (reset_i) begin
+        ex_rd_index_r   <= 5'd2; // SP
+        ex_alu_res_r    <= `RESET_SP;
+        ex_mem_data_r   <= 32'h0;
+        ex_mem_rd_r     <= 1'b0;
+        ex_mem_wr_r     <= 1'b0;
+        ex_mem_signed_r <= 1'b0;
+        ex_mem_size_r   <= `SIZE_BYTE;
+        branch_taken_w  <= 0;
+        jump_addr_w     <= 0;
+    end
+    else if(~epoch) begin
+        ex_rd_index_r   <= 5'd0; // SP
+        ex_alu_res_r    <= 0;
+        ex_mem_data_r   <= 32'h0;
+        ex_mem_rd_r     <= 1'b0;
+        ex_mem_wr_r     <= 1'b0;
+        ex_mem_signed_r <= 1'b0;
+        ex_mem_size_r   <= `SIZE_BYTE;
+        branch_taken_w  <= 0;
+        jump_addr_w     <= 0;
+    end
+    else begin
+        ex_rd_index_r   <= id_rd_index_r;
+        ex_alu_res_r    <= ex_alu_res_w_internal;
+        ex_mem_data_r   <= id_rb_value_r;
+        ex_mem_rd_r     <= id_mem_rd_r;
+        ex_mem_wr_r     <= id_mem_wr_r;
+        ex_mem_signed_r <= id_mem_signed_r;
+        ex_mem_size_r   <= id_mem_size_r;
+        jump_addr_w     <= jump_addr_r;
+        branch_taken_w  <= b_w;
+    end
+end
+
+endmodule

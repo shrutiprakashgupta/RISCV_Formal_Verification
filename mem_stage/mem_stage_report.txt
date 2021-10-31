@@ -1,2 +1,0 @@
-1. Assumption: Read and write cannot happen at the same time
-2. Assertion: Checks the signedness and proper value of the output from read stage.

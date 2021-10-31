@@ -1,13 +1,17 @@
 `timescale 1ns / 1ps
-
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Module Name: 	stage1
+// Top module:  	top
+// Linked modules: 	exe_stage, hazard_detection,
+/////////////////////////////////////////////////////////////////////////////////////////////
 `include "defines.sv"
 
 module stage1 (
 input             clk_i,
 input             reset_i,
-input      [31:0] irdata_i,      
+input      [31:0] irdata_i,
 input             branch_taken_w,
-input      [31:0] jump_addr_w,  
+input      [31:0] jump_addr_w,
 input             ex_stall_w,
 
 output reg [31:0] id_pc_r,
@@ -34,7 +38,7 @@ output reg [31:0] iaddr_o,
 output reg        ird_o
 
 );
-    
+
 typedef struct packed  {
 
 	bit [4:0] id_rd_index_w;
@@ -52,9 +56,8 @@ typedef struct packed  {
 	bit [1:0] id_mem_size_w;
 	bit [31:0] id_imm_w;
 
-
 } decode_struct;
-  
+
 wire [31:0] if_opcode ;
 
 function decode_struct decode_combo_logic(input [31:0] if_opcode_w) ;
@@ -178,11 +181,9 @@ id_imm_w =
 	(store_w)                       ? id_s_imm_w :
 	(jal_w)                         ? id_j_imm_w : 32'h0;
 
-
 id_rd_index_w = (branch_w || store_w)           ? 5'd0 : rd_w;
 id_ra_index_w = (lui_w || auipc_w || jal_w)     ? 5'd0 : ra_w;
 id_rb_index_w = (load_w || jump_w || alu_imm_w) ? 5'd0 : rb_w;
-
 
 id_alu_op_w =
 	(add_w || addi_w || lui_w || load_w || store_w) ? `ALU_ADD :
@@ -208,7 +209,6 @@ id_branch_w =
 	bltu_w ? `BR_LTU :
 	bgeu_w ? `BR_GEU :
 	jump_w ? `BR_JUMP : `BR_NONE;
-
 
 id_mem_size_w =
 	(lb_w || lbu_w || sb_w) ? `SIZE_BYTE :
@@ -245,14 +245,14 @@ reg  [31:0] if_pc_r;
 reg  [31:2] if_addr_r;
 reg         div_instr;
 wire [31:0] if_next_pc_w   = if_pc_r + 4;
-wire [31:2] if_next_addr_w = reset_i ? 0 
-							: branch_taken_w ? jump_addr_w[31:2] 
-							: (div_instr || ex_stall_w) ? if_addr_r 
+wire [31:2] if_next_addr_w = reset_i ? 0
+							: branch_taken_w ? jump_addr_w[31:2]
+							: (div_instr || ex_stall_w) ? if_addr_r
 							: if_addr_r + 30'h0000_0001;
 
 always@(posedge clk_i or posedge reset_i) begin
 	if (reset_i) begin
-		if_addr_r <= 'h0; 
+		if_addr_r <= 'h0;
 	end else begin
 		if_addr_r <= if_next_addr_w;
 	end
@@ -265,7 +265,7 @@ always @(posedge clk_i or posedge reset_i) begin
 		if_pc_r <= (if_next_addr_w<<2);
 	end
 end
- 
+
 assign d2 = decode_combo_logic(irdata_i);
 
 always @(posedge clk_i or posedge reset_i) begin
@@ -282,7 +282,7 @@ always @(posedge clk_i or posedge reset_i) begin
 		end
 	end
 end
- 
+
 always @(posedge clk_i or posedge reset_i) begin
 
 	if (reset_i) begin
@@ -367,4 +367,4 @@ always @(posedge clk_i or posedge reset_i) begin
 	end
 end
 
-endmodule 
+endmodule
