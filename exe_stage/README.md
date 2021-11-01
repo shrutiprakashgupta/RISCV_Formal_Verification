@@ -3,7 +3,19 @@
 It is the computational stage, which takes the operands and the operation commands from the ID/IF stage and performs the computation. As the pipelined processor is supported with data forwarding, a choice has to be made between the current operands, data from the execute stage and the data from memory stage, so as to be passed to the execute stage for computation. However, this is taken care by the hazard detection stage, thus the input to the execute stage is well-defined. The testbench considers the values of the operand and the operation type to decide whether the branch should be taken and what should be the output from the execute stage.
 
 ## Neighbouring Stages
-It directly connects with stage1 and the hazard_detection stage.
+It gets it's inputs from the stage1 and hazard_detection stages. It then processes them with the help of child stages - adder, shifter, multiplier and divider. It feeds to the memory stage and hazard_detection stage back. 
+### Hierarchy
+```
+exe_stage.tcl <br>
+| -- bind_exe_stage.sv <br>
+| | -- tb_exe_stage.sv <br>
+| | -- defines.sv <br>
+| | -- exe_stage.sv <br>
+| | | -- adder.sv <br>
+| | | -- shifter.sv <br>
+| | | -- multiplier.sv <br>
+| | | -- divider.sv 
+```
 
 ## Interface & Testbench
 1. input **clk_i**
@@ -99,3 +111,8 @@ The iaddr_o or PC signal passed to the instruction memory is sometimes held cons
     
 ## Child Stages
 The behaviour of the children stages are verified with the assertions put on the execute stage output and thus there is no need to write separate testbenches for each of them. 
+
+## Errors/Bugs Detected
+1. Division and Remainder operations work giving wrong output in the following cases 
+- stall signal not affecting PC : further added to the logic of stage1
+- exceptional cases : when the divisor is zero, consuming 32 cycles in division is not a wise choice, also the output coming out after 32 cycles was not correct. This was further rectified by making RTL changes in divider module.

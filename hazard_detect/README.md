@@ -3,7 +3,15 @@
 It is a purely combinational stage which takes the inputs (including register indices and values of operands and destination registers) from the stage1, exe_stage and mem_stage, and checks for any hazard cases to be present. If there is any hazard (i.e. the operand register of stage1 is same as the destination register of execute or memory stage), then it passes the value from the corresponding stage, instead of the original operand value - and aids the feedforward process in the pipeline. 
 
 ## Neighbouring Stages
-It directly connects with stage1, execute stage, memory stage and the register file.
+It takes inputs from the stage1, exe_stage, data memory stage and the register file. It then decides the correct operand values based on hazardous cases existing and the precedence rules, and feeds the output to the exe_stage.
+### Hierarchy
+```
+hazard_detection.tcl
+| -- bind_hazard_detection.sv
+| | -- tb_hazard_detection.sv
+| | -- defines.sv
+| | -- hazard_detection.sv
+```
 
 ## Testing Combinational block with Formal
 As the formal verification tests the model at each clock step, as it progresses over time, the presence of clock signal vital for writing assumptions and assertions. Thus for this purely combinational block, I separated it from the other stages and put a set of registers at its output. This transformation will although affect the timing in pipeline, however for testing individual block, it is harmless. When it is connected back in the pipeline, the registers are removed, ensuring proper timing. 
@@ -29,3 +37,6 @@ As the formal verification tests the model at each clock step, as it progresses 
 - Description: Execute stage output - decided on the basis of hazard existance.
 10. Assumptions: All of the assumptions are forcing the data values to be different for easy tracking of at the output (waveform level). However, these are not hard restrictions. 
 11. Assertions: The assertions check if the hazardous cases are being detected or not. 
+
+# Errors/Bugs detected
+1. The precedence between data from execute and memory stage, in case both the hazards occur simultaneously was wrong before. The execute stage should get the preference as it corresponds to curr-1 instruction while the memory stage corresponds to curr-2 instruction and will be overwritten by the curr-1 instruction output. 

@@ -4,6 +4,14 @@ It is the combined Instruction fetch and decode stage. It controls the PC value,
 
 ## Neighbouring Stages
 It directly connects with the instruction memory, hazard detection stage and the execute stage. Instruction memory is purely combinational and read-only, same as hazard detect stage, while the execute stage is one-cycle behind the stage1. 
+### Hierarchy
+```
+stage1.tcl <br>
+| -- bind_stage1.sv <br>
+| | -- tb_stage1.sv <br>
+| | -- defines.sv <br>
+| | -- stage1.sv <br>
+```
 
 ## Interface & Testbench
 1. input **clk_i**
@@ -88,3 +96,7 @@ Moreover, the maximum range to which PC can jump is decided by the size of the o
 - Description: The pc signal passed to the instruction memory
 - Assertions: `pc_inc_prop`, `pc_jump_prop`
 - Note/Remark: The pc should increment by 4, unless a branch instruction is there or stall is set high from the execute stage because a divide instruction is in progress. While, in case of branch instruction it should change to the value passed as the branch target. The ird_o signal is like enable signal for the instruction memory and is tied to 1. 
+
+# Errors/Bugs Detected
+1. The stall signal design is aided with the Formal Verification - the execute stage is abstracted out and the behaviour of stall is modeled with the assumptions `prop_br_stall_div`, `valid_ex_stall_div` and `valid_ex_stall_n_div`. A separate signal called `div_in_prg` is maintained in the testbench and used to track the division operation. Errors were observed in the stall signal affecting PC update and thus the later being stuck at the division operation (DIV instruction being read repeatedly) or ignoring division operation completion (Next instruction being read on the consevutive clock cycle to the DIV operation, which is not yet complete). 
+2. Absence of register behaviour at some of the outputs caused assertions to fail, identifying the error. 
