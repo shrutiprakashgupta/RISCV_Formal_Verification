@@ -4,29 +4,29 @@ This directory was set up at the beginning of the verification of complete desig
 
 # Hierarchy
 ```
-top.sv <br>
-defines.sv <br>
-| -- stage1.sv <br>
-| -- hazard_detection.sv (combinational) <br>
-| | -- instruction_memory.sv <br>
-| -- exe_stage.sv <br>
-| | -- adder.sv <br>
-| | -- shifter.sv <br>
-| | -- multiplier.sv <br>
-| | -- divider.sv <br>
-| -- mem_stage.sv <br>
-| | -- data_memory.sv <br>
-| -- (wb_stage.sv - removed) <br>
-| | -- register_file.sv <br>
+top.sv 
+defines.sv 
+| -- stage1.sv 
+| -- hazard_detection.sv (combinational) 
+| | -- instruction_memory.sv 
+| -- exe_stage.sv 
+| | -- adder.sv 
+| | -- shifter.sv 
+| | -- multiplier.sv 
+| | -- divider.sv 
+| -- mem_stage.sv 
+| | -- data_memory.sv 
+| -- (wb_stage.sv - removed) 
+| | -- register_file.sv 
 ```
 
 # Testbench Hierarchy
 ```
-tb_top.tcl <br>
-| -- bind_top.sv <br>
-| | -- tb_top.sv <br>
-| | -- defines.sv <br>
-| | -- top.sv <br>
+tb_top.tcl 
+| -- bind_top.sv 
+| | -- tb_top.sv 
+| | -- defines.sv 
+| | -- top.sv 
 | | ... same hierarchy as defined above
 ```
 

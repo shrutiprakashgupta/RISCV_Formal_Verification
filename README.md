@@ -10,20 +10,20 @@ Once this is done, then the full-RTL testing is to be done. The same testbenches
 
 ## Design Hierarchy
 ```
-top.sv <br>
-defines.sv <br>
-| -- stage1.sv <br>
-| -- hazard_detection.sv (combinational) <br>
-| | -- instruction_memory.sv <br>
-| -- exe_stage.sv <br>
-| | -- adder.sv <br>
-| | -- shifter.sv <br>
-| | -- multiplier.sv <br>
-| | -- divider.sv <br>
-| -- mem_stage.sv <br>
-| | -- data_memory.sv <br>
-| -- (wb_stage.sv - removed) <br>
-| | -- register_file.sv <br>
+top.sv 
+defines.sv 
+| -- stage1.sv 
+| -- hazard_detection.sv (combinational) 
+| | -- instruction_memory.sv 
+| -- exe_stage.sv 
+| | -- adder.sv 
+| | -- shifter.sv 
+| | -- multiplier.sv 
+| | -- divider.sv 
+| -- mem_stage.sv 
+| | -- data_memory.sv 
+| -- (wb_stage.sv - removed) 
+| | -- register_file.sv 
 ```
 
 ## Errors/Bugs Detected
