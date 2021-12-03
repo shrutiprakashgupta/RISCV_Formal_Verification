@@ -29,3 +29,6 @@ defines.sv <br>
 ## Errors/Bugs Detected
 Several bugs including some as simple as signals defined with wire and register behaviours (while the other one was expected) to as complex as incorrect functioning of the stall signal, coming from the execute stage, to stall the PC while division operation is in progress and then resume the processing. Each of these errors (module wise) are mentioned in the respective folders (README files). <br> 
 For more detailed reports, refer to the individual folders. 
+
+## Coverage Report
+Jasper gold coverage app is used to analyze the testbench coverage in terms of stimulus and monitoring. The tool generated reports as per the following two methods of analysis - a. Stimulus coverage: Checks the stimulus being driven at every net and reports if a port is overconstraint by the testbench, and b. Checker coverage: Checks if every output net is monitored by the testbench or not. However, some of the unmonitored nets were intended, due to the applied abstraction method, and thus the errors/warnings corresponding to them are waivered. A detailed report regarding coverage is included in the directory named the same.    
