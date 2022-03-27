@@ -18,6 +18,8 @@ output [63:0] mul_res_w
 wire [31:0] mul_div_a_w = (id_a_signed_r && id_ra_value_r[31]) ? -id_ra_value_r : id_ra_value_r;
 wire [31:0] mul_div_b_w = (id_b_signed_r && id_rb_value_r[31]) ? -id_rb_value_r : id_rb_value_r;
     
+// Allowing Compiler to decide the logic for extending 32 bit numbers to 63 as
+// signs are already included
 assign mul_res_w = mul_div_a_w * mul_div_b_w;
 
 endmodule
